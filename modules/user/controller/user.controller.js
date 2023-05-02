@@ -2,7 +2,7 @@ const userModel = require("../../../DB/models/user.model");
 const jwt = require("jsonwebtoken");
 const fs = require("fs")
 const { resolve } = require('path');
-const bcrypt = require("bcrypt");
+// const bcrypt = require("bcrypt");
 const sendEmail = require("../../../common/email.handling");
 const { OAuth2Client } = require("google-auth-library");
 const client = new OAuth2Client(process.env.GOOGLECLIENTID);
@@ -114,7 +114,7 @@ const signInGoogle = (req, res) =>
                 res.json({ message: `Success`, token });
             }
             else {
-                const newUserData = { userName: response.payload.name.slice(0,10), email: response.payload.email, isConfirmed: true, accountType: "google", profilePic: response.payload.picture }
+                const newUserData = { userName: response.payload.name.slice(0, 10), email: response.payload.email, isConfirmed: true, accountType: "google", profilePic: response.payload.picture }
                 const newUser = await userModel.insertMany(newUserData);
                 const token = jwt.sign({ newUser }, process.env.SECRET_KEY);
                 res.json({ message: `Success`, token });
@@ -171,21 +171,33 @@ const signIn = async (req, res) =>
     const user = await userModel.findOne({ email });
     if (user) {
         if (user.isConfirmed) {
-            bcrypt.compare(password, user.password, function (err, result)
-            {
-                if (result) {
-                    // console.log(user.password);
-                    user.password = undefined;
-                    // console.log(user.password);
-                    const token = jwt.sign({ user }, process.env.SECRET_KEY);
-                    // console.log(token);
-                    // res.json({ message: `Welcome ${user.userName}`, token });
-                    res.json({ message: `Success`, token });
-                }
-                else {
-                    res.status(400).json({ message: "Password is incorrect!!" })
-                }
-            })
+            // bcrypt.compare(password, user.password, function (err, result)
+            // {
+            //     if (result) {
+            //         // console.log(user.password);
+            //         user.password = undefined;
+            //         // console.log(user.password);
+            //         const token = jwt.sign({ user }, process.env.SECRET_KEY);
+            //         // console.log(token);
+            //         // res.json({ message: `Welcome ${user.userName}`, token });
+            //         res.json({ message: `Success`, token });
+            //     }
+            //     else {
+            //         res.status(400).json({ message: "Password is incorrect!!" })
+            //     }
+            // })
+            if (password == user.password) {
+                // console.log(user.password);
+                user.password = undefined;
+                // console.log(user.password);
+                const token = jwt.sign({ user }, process.env.SECRET_KEY);
+                // console.log(token);
+                // res.json({ message: `Welcome ${user.userName}`, token });
+                res.json({ message: `Success`, token });
+            }
+            else {
+                res.status(400).json({ message: "Password is incorrect!!" })
+            }
         }
         else {
             res.status(400).json({ message: "Email isn't confirmed!!" })

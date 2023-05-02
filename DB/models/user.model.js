@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const bcrypt = require("bcrypt");
+// const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema({
     userName : {
@@ -33,20 +33,20 @@ const userSchema = new mongoose.Schema({
     profilePic: String
 }, {timestamps: true});
 
-userSchema.pre("save", function(next) {
-    if(this.password) {
-        this.password = bcrypt.hashSync(this.password, parseInt(process.env.SALT));
-        // this.accountType = "native";
-        // this.phone = CryptoJs.AES.encrypt(this.phone, process.env.SECRET_KEY).toString();
-    }
-    // else {
-    //     this.accountType = "native";
+// userSchema.pre("save", function(next) {
+//     if(this.password) {
+//         this.password = bcrypt.hashSync(this.password, parseInt(process.env.SALT));
+//         // this.accountType = "native";
+//         // this.phone = CryptoJs.AES.encrypt(this.phone, process.env.SECRET_KEY).toString();
+//     }
+//     // else {
+//     //     this.accountType = "native";
 
-    // }
-    this.userId = this.userName.replaceAll(" ", "").toLowerCase() + "-" + this._id.toString();
+//     // }
+//     this.userId = this.userName.replaceAll(" ", "").toLowerCase() + "-" + this._id.toString();
 
-    next();
-});
+//     next();
+// });
 const userModel = mongoose.model("user", userSchema);
 
 module.exports = userModel;
