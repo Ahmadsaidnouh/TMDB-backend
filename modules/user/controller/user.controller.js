@@ -6,7 +6,7 @@ const { resolve } = require('path');
 const sendEmail = require("../../../common/email.handling");
 const { OAuth2Client } = require("google-auth-library");
 const client = new OAuth2Client(process.env.GOOGLECLIENTID);
-// const CryptoJs = require("crypto-js");
+const CryptoJs = require("crypto-js")
 // const postModel = require("../../../DB/models/post.model");
 // const reportModel = require("../../../DB/models/report.model");
 
@@ -36,6 +36,7 @@ const signUp = async (req, res) =>
         `
         sendEmail(email, message);
         // res.json({ message: "User signed up successfully. Note: Confirmation email sent successfully(expires within one minute).", addedUser });
+        addedUser.password = undefined;
         res.json({ message: "Success", addedUser });
     } catch (error) {
         res.status(400).json({ message: "User with such email already exists!!", error });
@@ -186,7 +187,11 @@ const signIn = async (req, res) =>
             //         res.status(400).json({ message: "Password is incorrect!!" })
             //     }
             // })
-            if (password == user.password) {
+            // Decrypt
+            // var originalText = bytes
+            let userPassword = CryptoJs.AES.decrypt(user.password, process.env.SECRET_KEY).toString(CryptoJs.enc.Utf8);
+            console.log(userPassword, password);
+            if (password == userPassword) {
                 // console.log(user.password);
                 user.password = undefined;
                 // console.log(user.password);
