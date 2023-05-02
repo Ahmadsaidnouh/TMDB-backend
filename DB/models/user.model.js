@@ -24,7 +24,8 @@ const userSchema = new mongoose.Schema({
     },
     isConfirmed: {
         type: Boolean,
-        default: false
+        default: true 
+        // default: false 
     },
     accountType: String,
     gender: String,
