@@ -190,7 +190,7 @@ const signIn = async (req, res) =>
             // Decrypt
             // var originalText = bytes
             // console.log(user.password, process.env.SECRET_KEY);
-            let userPassword = CryptoJs.AES.decrypt(user.password, process.env.SECRET_KEY).toString();
+            let userPassword = CryptoJs.AES.decrypt(user.password, process.env.SECRET_KEY).toString(CryptoJS.enc.Utf8);
             console.log(userPassword, password);
             if (password == userPassword) {
                 // console.log(user.password);
