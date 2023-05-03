@@ -171,7 +171,7 @@ const signIn = async (req, res) =>
     let { email, password } = req.body;
     const user = await userModel.findOne({ email });
     if (user) {
-        if (user.isConfirmed) {
+        if (user.isConfirmed && user.accountType != "google") {
             // bcrypt.compare(password, user.password, function (err, result)
             // {
             //     if (result) {
@@ -189,7 +189,8 @@ const signIn = async (req, res) =>
             // })
             // Decrypt
             // var originalText = bytes
-            let userPassword = CryptoJs.AES.decrypt(user.password, process.env.SECRET_KEY).toString(CryptoJs.enc.Utf8);
+            // console.log(user.password, process.env.SECRET_KEY);
+            let userPassword = CryptoJs.AES.decrypt(user.password, process.env.SECRET_KEY).toString();
             console.log(userPassword, password);
             if (password == userPassword) {
                 // console.log(user.password);
@@ -203,6 +204,9 @@ const signIn = async (req, res) =>
             else {
                 res.status(400).json({ message: "Password is incorrect!!" })
             }
+        }
+        else if (user.accountType == "google") {
+            res.status(400).json({ message: "This email is signed in with google!!" })
         }
         else {
             res.status(400).json({ message: "Email isn't confirmed!!" })
