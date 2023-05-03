@@ -18,9 +18,9 @@ const initConnection = require("./DB/config");
 //     }
 // });
 // const upload = multer({storage: storage})
+app.use(cors({}));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(express.json());
-app.use(cors({}));
 app.use(userRoutes);
 initConnection();
 // app.post("/profile", upload.single("avatar"), function(req, res) {
