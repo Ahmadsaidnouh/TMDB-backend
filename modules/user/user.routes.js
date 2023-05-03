@@ -40,6 +40,9 @@ router.get("/tok/:id", (req, res) => {
     const token = jwt.sign({ id, isLoggedIn:true }, process.env.SECRET_KEY); 
     res.json({token})
 });
+router.get("/", (req,res) => {
+    res.json({message:"hello"})
+});
 router.post("/user/signUp", validationFunc(signUpValidation), signUp);
 router.get("/user/confirmEmail/:token", confirmEmail);
 router.get("/user/resendConfirmationEmail/:token", resendConfirmation);
